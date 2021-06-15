@@ -1,0 +1,37 @@
+MOV $SP, :stack
+J :main
+
+stack:
+.buffer 1024
+
+.text
+
+main:
+    # User input buffer, 255 chars + 1 null terminator
+    MOV $BYJ, $SP
+    ADD $SP, 0x100
+    MOV $C, 0
+     
+    readChar:   
+        # Read user input character (to $A)
+        INT 0x40
+        
+        ST $BYJ, $A
+        
+        INC $BYJ
+        INC $C
+        
+        # Check if buffer full
+        INC $C
+        JZ :readingFinished
+        DEC $C
+        J :readChar
+    
+    # Add null terminator
+    readingFinished:
+        ST $BYJ, 0
+        
+        
+        
+        
+        
